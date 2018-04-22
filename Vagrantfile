@@ -11,23 +11,8 @@ Vagrant.configure("2") do |config|
 	  sudo apt-get install -y oracle-java8-set-default
   SHELL
   
-  config.vm.provision 'docker', type: 'shell', inline: <<-SHELL
-    set -eu -o pipefail
-    DOCKER_VERSION=18.03
-    if [[ -z "$DOCKER_VERSION" ]]; then
-      echo 'DOCKER_VERSION is not set.'
-      exit 1
-    fi
-    export DEBIAN_FRONTEND=noninteractive
-    apt-get update
-    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-    apt-key fingerprint 0EBFCD88
-    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    apt-get update
-    apt-get install -y "docker-ce=${DOCKER_VERSION}.*"
-    docker info
-    usermod -aG docker vagrant
-  SHELL
+# requires vagrant plugin .. command: vagrant plugin install vagrant-docker-compose
+  config.vm.provision :docker
+  config.vm.provision :docker_compose
   
 end
